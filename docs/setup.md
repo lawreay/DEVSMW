@@ -27,10 +27,10 @@ Alternative MySQL path:
 
 Edit `config/config.php` if your database password or port is different.
 
-Before public use, change:
+Before public use, sign in to the admin panel and change the default password:
 
-```php
-'password' => 'change-me-now',
+```text
+Admin Dashboard > Password
 ```
 
 ## Import Profiles

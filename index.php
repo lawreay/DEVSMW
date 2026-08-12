@@ -36,11 +36,15 @@ $profiles = $stmt->fetchAll();
 <main class="page">
     <section class="search-panel">
         <h1>Malawi Developer Profiles</h1>
-        <p>Search public developer profiles, projects, skills, locations, and work details.</p>
+        <p>Find local talent, open-source contributors, and developer stories from across Malawi.</p>
         <form class="search-form" method="get">
             <input type="search" name="q" value="<?= e($q) ?>" placeholder="Search by name, skill, project, location...">
             <button type="submit">Search</button>
         </form>
+        <div class="hero-actions">
+            <a class="button-link" href="index.php">Browse all profiles</a>
+            <a class="button-link secondary" href="admin/login.php">Admin login</a>
+        </div>
     </section>
 
     <section class="result-meta">

@@ -8,9 +8,10 @@ $id = (int) ($_POST['id'] ?? 0);
 
 try {
     refresh_profile_from_github($id);
-    $_SESSION['flash'] = 'GitHub profile refreshed.';
+    audit_log('refresh_github', 'profile', $id);
+    flash('GitHub profile refreshed.');
 } catch (Throwable $e) {
-    $_SESSION['flash'] = 'Refresh failed: ' . $e->getMessage();
+    flash('Refresh failed: ' . $e->getMessage(), 'error');
 }
 
 redirect('dashboard.php');

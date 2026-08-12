@@ -42,7 +42,11 @@ Username: admin
 Password: change-me-now
 ```
 
-Change the default password in `config/config.php` before any public use.
+Change the default password from the admin panel before any public use:
+
+```text
+Admin Dashboard > Password
+```
 
 ## Important Legal Note
 

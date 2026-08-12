@@ -13,6 +13,12 @@ if (!$profile) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
+    $before = $profile;
+    $allowedConsent = ['public_data', 'claimed', 'opted_out', 'needs_review'];
+    $allowedVisibility = ['published', 'draft', 'hidden'];
+    $consentStatus = in_array($_POST['consent_status'] ?? '', $allowedConsent, true) ? $_POST['consent_status'] : 'needs_review';
+    $visibility = in_array($_POST['visibility'] ?? '', $allowedVisibility, true) ? $_POST['visibility'] : 'draft';
+
     $update = db()->prepare(
         'UPDATE profiles SET
             name = ?, title = ?, location = ?, work = ?, phone = ?, email = ?, website = ?,
@@ -32,10 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         nullable_field($_POST['bio'] ?? ''),
         nullable_field($_POST['strengths'] ?? ''),
         nullable_field($_POST['markdown'] ?? ''),
-        $_POST['consent_status'] ?? 'needs_review',
-        $_POST['visibility'] ?? 'draft',
+        $consentStatus,
+        $visibility,
         $id,
     ]);
+    $stmt->execute([$id]);
+    $after = $stmt->fetch() ?: [];
+    audit_log('update_profile', 'profile', $id, $before, $after);
+    flash('Profile saved.');
     redirect('profile_edit.php?id=' . $id);
 }
 ?>

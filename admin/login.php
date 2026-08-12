@@ -7,11 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (hash_equals(config('admin.username'), $username) && hash_equals(config('admin.password'), $password)) {
-        $_SESSION['admin_logged_in'] = true;
+    $admin = find_admin_by_username($username);
+    if ($admin && password_verify($password, $admin['password_hash'])) {
+        login_admin($admin);
+        audit_log('login', 'admin_user', (int) $admin['id']);
         redirect('dashboard.php');
     }
 
+    audit_log('failed_login', 'admin_user', null, null, ['username' => $username]);
     $error = 'Invalid admin login.';
 }
 ?>

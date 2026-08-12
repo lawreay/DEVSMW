@@ -18,5 +18,6 @@ foreach ($profiles as $profile) {
     }
 }
 
-$_SESSION['flash'] = "GitHub refresh complete. {$success} updated, {$failed} failed.";
+audit_log('refresh_all_github', 'profile', null, null, ['success' => $success, 'failed' => $failed]);
+flash("GitHub refresh complete. {$success} updated, {$failed} failed.", $failed > 0 ? 'warning' : 'info');
 redirect('dashboard.php');

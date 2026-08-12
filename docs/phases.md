@@ -1,17 +1,38 @@
 # Project Phases
 
-## Phase 1: Local MVP
+## Phase 1: Local MVP - Complete
 
-* Create MySQL schema.
-* Import existing markdown profiles.
-* Build public search page.
-* Build public profile page.
-* Build admin login.
-* Build admin profile editor.
-* Add one-click GitHub refresh.
-* Add legal, privacy, and data handling docs.
+Completed on 12 August 2026.
 
-## Phase 2: Data Quality
+* [x] Create MySQL schema.
+* [x] Import existing markdown profiles.
+* [x] Build public search page.
+* [x] Build public profile page.
+* [x] Build admin login.
+* [x] Build admin profile editor.
+* [x] Add one-click GitHub refresh per profile.
+* [x] Add one-click GitHub refresh for all profiles.
+* [x] Add legal, privacy, and data handling docs.
+* [x] Verify PHP syntax.
+* [x] Verify app routes through WAMP/Apache.
+* [x] Verify admin login and dashboard access.
+
+Phase 1 database status:
+
+* Profiles imported: 256
+* Projects imported: 1,316
+* Missing private-contribution ranks: 0
+
+Post-MVP hardening added:
+
+* Database-backed admin users.
+* Hashed admin passwords.
+* Admin password-change page.
+* Admin audit logs.
+* Migration file for auth/audit tables.
+* Engineering standards document.
+
+## Phase 2: Data Quality - Next
 
 * Add source records for every non-GitHub data point.
 * Add profile claim workflow.

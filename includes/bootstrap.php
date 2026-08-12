@@ -78,7 +78,7 @@ function verify_csrf(): void
 
 function is_admin(): bool
 {
-    return !empty($_SESSION['admin_logged_in']);
+    return !empty($_SESSION['admin_user_id']);
 }
 
 function require_admin(): void
@@ -86,6 +86,69 @@ function require_admin(): void
     if (!is_admin()) {
         redirect('login.php');
     }
+}
+
+function current_admin_id(): ?int
+{
+    return isset($_SESSION['admin_user_id']) ? (int) $_SESSION['admin_user_id'] : null;
+}
+
+function find_admin_by_username(string $username): ?array
+{
+    $stmt = db()->prepare('SELECT * FROM admin_users WHERE username = ? AND is_active = 1 LIMIT 1');
+    $stmt->execute([$username]);
+    $admin = $stmt->fetch();
+
+    return $admin ?: null;
+}
+
+function login_admin(array $admin): void
+{
+    session_regenerate_id(true);
+    $_SESSION['admin_user_id'] = (int) $admin['id'];
+    $_SESSION['admin_username'] = $admin['username'];
+
+    $stmt = db()->prepare('UPDATE admin_users SET last_login_at = NOW() WHERE id = ?');
+    $stmt->execute([(int) $admin['id']]);
+}
+
+function audit_log(string $action, string $entityType, ?int $entityId = null, ?array $before = null, ?array $after = null): void
+{
+    $stmt = db()->prepare(
+        'INSERT INTO audit_logs (admin_user_id, action, entity_type, entity_id, before_json, after_json, ip_address, user_agent, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())'
+    );
+    $stmt->execute([
+        current_admin_id(),
+        $action,
+        $entityType,
+        $entityId,
+        $before ? json_encode($before, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : null,
+        $after ? json_encode($after, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : null,
+        $_SERVER['REMOTE_ADDR'] ?? null,
+        substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255),
+    ]);
+}
+
+function flash(string $message, string $type = 'info'): void
+{
+    $_SESSION['flash'] = ['message' => $message, 'type' => $type];
+}
+
+function consume_flash(): ?array
+{
+    if (empty($_SESSION['flash'])) {
+        return null;
+    }
+
+    $flash = $_SESSION['flash'];
+    unset($_SESSION['flash']);
+
+    if (is_string($flash)) {
+        return ['message' => $flash, 'type' => 'info'];
+    }
+
+    return $flash;
 }
 
 function markdown_to_html(string $markdown): string

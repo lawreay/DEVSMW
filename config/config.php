@@ -11,11 +11,6 @@ return [
         'pass' => '',
         'charset' => 'utf8mb4',
     ],
-    'admin' => [
-        'username' => 'admin',
-        // Change this immediately after first setup.
-        'password' => 'change-me-now',
-    ],
     'github' => [
         // Optional: set a token to increase rate limits.
         'token' => getenv('GITHUB_TOKEN') ?: '',

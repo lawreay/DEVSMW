@@ -5,7 +5,9 @@ declare(strict_types=1);
 require __DIR__ . '/../includes/bootstrap.php';
 
 $profilesDir = __DIR__ . '/../malawi_profiles';
-$rankData = json_decode(file_get_contents(__DIR__ . '/../malawi_rank.json'), true);
+$rankJson = file_get_contents(__DIR__ . '/../malawi_rank.json');
+$rankJson = preg_replace('/^\xEF\xBB\xBF/', '', $rankJson);
+$rankData = json_decode($rankJson, true) ?: [];
 $ranks = [];
 foreach (($rankData['user_private'] ?? []) as $index => $username) {
     $ranks[$username] = $index + 1;

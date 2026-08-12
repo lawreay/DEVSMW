@@ -28,13 +28,14 @@ $profiles = $stmt->fetchAll();
     <a class="brand" href="../index.php">DEVSMW Admin</a>
     <nav>
         <a href="../index.php">Public site</a>
+        <a href="change_password.php">Password</a>
         <a href="logout.php">Logout</a>
     </nav>
 </header>
 <main class="page">
-    <?php if (!empty($_SESSION['flash'])): ?>
-        <p class="alert"><?= e($_SESSION['flash']) ?></p>
-        <?php unset($_SESSION['flash']); ?>
+    <?php $flash = consume_flash(); ?>
+    <?php if ($flash): ?>
+        <p class="alert <?= e($flash['type']) ?>"><?= e($flash['message']) ?></p>
     <?php endif; ?>
 
     <section class="admin-head">
@@ -89,6 +90,28 @@ $profiles = $stmt->fetchAll();
             </tbody>
         </table>
     </div>
+
+    <section class="recent-audit">
+        <h2>Recent Admin Activity</h2>
+        <?php
+        $logs = db()->query(
+            'SELECT audit_logs.*, admin_users.username
+             FROM audit_logs
+             LEFT JOIN admin_users ON admin_users.id = audit_logs.admin_user_id
+             ORDER BY audit_logs.created_at DESC
+             LIMIT 8'
+        )->fetchAll();
+        ?>
+        <div class="activity-list">
+            <?php foreach ($logs as $log): ?>
+                <p>
+                    <strong><?= e($log['action']) ?></strong>
+                    <span><?= e($log['entity_type']) ?><?= $log['entity_id'] ? ' #' . e((string) $log['entity_id']) : '' ?></span>
+                    <small><?= e($log['username'] ?: 'system') ?>, <?= e($log['created_at']) ?></small>
+                </p>
+            <?php endforeach; ?>
+        </div>
+    </section>
 </main>
 </body>
 </html>
