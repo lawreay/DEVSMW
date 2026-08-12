@@ -43,10 +43,30 @@ Post-MVP hardening added:
 
 ## Phase 3: External Integrations
 
-* Use GitHub API with an authenticated token.
-* Add approved search API integration such as Google Programmable Search or Bing Web Search.
-* Add LinkedIn URLs manually or through approved partner/API access only.
-* Add audit logs for every admin edit and refresh.
+Phase 3 introduces trusted external data and search capabilities while preserving site quality and privacy.
+
+### 3.1 GitHub API integration
+* Add support for an authenticated GitHub token to avoid public rate limits.
+* Fetch and refresh profile metadata from GitHub, including repositories, language data, stars, followers, and repo links.
+* Store GitHub source records separately for audit and reconciliation.
+* Add sync status indicators to the admin dashboard and profile records.
+
+### 3.2 Search and discovery integration
+* Add an approved search API such as Google Programmable Search or Bing Web Search for broader discoverability.
+* Surface relevant public resources for developers, including GitHub repos, portfolio pages, and community content.
+* Keep results focused on Malawi developers and avoid exposing private or sensitive data.
+* Add a fallback to site search when external search is unavailable.
+
+### 3.3 External profile links
+* Support LinkedIn URLs as an approved external profile field.
+* Require manual review or approved partner/API access before publishing LinkedIn links.
+* Add optional fields for portfolio and social links that can be reviewed before display.
+* Keep all external links under admin review to prevent spam and abuse.
+
+### 3.4 Admin audit and review
+* Log every admin edit, profile refresh, and integration sync event in audit logs.
+* Add an admin review workflow for imported or updated external data.
+* Surface integration-related warnings when data is stale or unverifiable.
 
 ## Phase 4: Public Launch
 

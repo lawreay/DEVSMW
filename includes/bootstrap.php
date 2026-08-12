@@ -4,7 +4,46 @@ declare(strict_types=1);
 
 session_start();
 
+load_dotenv(__DIR__ . '/../.env');
+
 $config = require __DIR__ . '/../config/config.php';
+
+function load_dotenv(string $filePath): void
+{
+    if (!file_exists($filePath) || !is_readable($filePath)) {
+        return;
+    }
+
+    $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#')) {
+            continue;
+        }
+
+        $parts = explode('=', $line, 2);
+        if (count($parts) !== 2) {
+            continue;
+        }
+
+        $name = trim($parts[0]);
+        $value = trim($parts[1]);
+
+        if ($value !== '' && ($value[0] === '"' || $value[0] === "'")) {
+            $value = substr($value, 1, -1);
+        }
+
+        if ($name === '') {
+            continue;
+        }
+
+        if (getenv($name) === false || getenv($name) === '') {
+            putenv(sprintf('%s=%s', $name, $value));
+            $_ENV[$name] = $value;
+            $_SERVER[$name] = $value;
+        }
+    }
+}
 
 function config(string $key, mixed $default = null): mixed
 {

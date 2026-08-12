@@ -16,6 +16,16 @@ $stmt = db()->prepare($sql);
 $stmt->execute($params);
 $profiles = $stmt->fetchAll();
 
+$externalSearch = false;
+$searchResults = [];
+if ($q !== '') {
+    require __DIR__ . '/includes/search.php';
+    if (search_is_external()) {
+        $searchResults = search_results($q);
+        $externalSearch = true;
+    }
+}
+
 $topProfiles = db()->query(
     'SELECT * FROM profiles WHERE visibility = "published" AND rank_private IS NOT NULL ORDER BY rank_private ASC LIMIT 10'
 )->fetchAll();
@@ -166,6 +176,29 @@ foreach ($techData as $tech) {
             </div>
         </div>
     </section>
+
+    <?php if ($q !== '' && $externalSearch): ?>
+        <section class="section-card">
+            <div class="section-head">
+                <div>
+                    <h2>External search results</h2>
+                    <p>Results from the configured search provider for "<?= e($q) ?>".</p>
+                </div>
+            </div>
+            <?php if (count($searchResults) === 0): ?>
+                <p class="muted">No external results found for this query. Try another keyword or use the local search below.</p>
+            <?php else: ?>
+                <div class="news-list">
+                    <?php foreach ($searchResults as $result): ?>
+                        <li>
+                            <a href="<?= e($result['url']) ?>" target="_blank" rel="noopener noreferrer"><strong><?= e($result['name']) ?></strong></a>
+                            <p><?= e($result['snippet']) ?></p>
+                        </li>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+    <?php endif; ?>
 
     <?php if ($q !== ''): ?>
         <section class="section-card">

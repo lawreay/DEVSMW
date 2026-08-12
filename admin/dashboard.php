@@ -42,6 +42,7 @@ $profiles = $stmt->fetchAll();
         <div>
             <h1>Profiles</h1>
             <p>Edit data, review visibility, and refresh GitHub data in one click.</p>
+            <p class="muted">GitHub token is <?= config('github.token') ? 'configured' : 'not configured' ?>. Search engine is set to <?= e(config('search.engine')) ?>.</p>
         </div>
         <div class="admin-actions">
             <form method="post" action="refresh_all_github.php">
