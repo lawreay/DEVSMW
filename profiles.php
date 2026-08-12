@@ -22,13 +22,13 @@ $profiles = $stmt->fetchAll();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>All profiles - <?= e(config('app_name')) ?></title>
-    <link rel="stylesheet" href="assets/app.css">
+    <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>
 <body>
 <header class="topbar">
-    <a class="brand" href="index.php">DEVSMW Profiles</a>
+    <a class="brand" href="<?= e(site_url('index.php')) ?>">DEVSMW Profiles</a>
     <nav>
-        <a href="docs/project-goal.md">Docs</a>
+        <a href="<?= e(site_url('docs/project-goal.md')) ?>">Docs</a>
     </nav>
 </header>
 <main class="page">

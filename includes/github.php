@@ -15,23 +15,52 @@ function github_request(string $url): array
         $headers[] = 'Authorization: Bearer ' . $token;
     }
 
-    $context = stream_context_create([
-        'http' => [
-            'method' => 'GET',
-            'header' => implode("\r\n", $headers),
-            'timeout' => 20,
-            'ignore_errors' => true,
-        ],
-    ]);
+    if (function_exists('curl_init')) {
+        $curl = curl_init($url);
+        curl_setopt_array($curl, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_USERAGENT => 'DEVSMW-Profiles',
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_CONNECTTIMEOUT => 15,
+            CURLOPT_TIMEOUT => 20,
+            CURLOPT_FAILONERROR => false,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+        ]);
 
-    $body = file_get_contents($url, false, $context);
-    if ($body === false) {
-        throw new RuntimeException('GitHub request failed.');
-    }
+        $body = curl_exec($curl);
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $error = curl_error($curl);
+        curl_close($curl);
 
-    $status = $http_response_header[0] ?? '';
-    if (!str_contains($status, '200')) {
-        throw new RuntimeException('GitHub returned: ' . $status);
+        if ($body === false || $error !== '') {
+            throw new RuntimeException('GitHub request failed: ' . ($error ?: 'empty response'));
+        }
+
+        if ($statusCode !== 200) {
+            throw new RuntimeException('GitHub returned HTTP ' . $statusCode);
+        }
+    } else {
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => implode("\r\n", $headers),
+                'timeout' => 20,
+                'ignore_errors' => true,
+            ],
+        ]);
+
+        $body = file_get_contents($url, false, $context);
+        if ($body === false) {
+            throw new RuntimeException('GitHub request failed.');
+        }
+
+        $status = $http_response_header[0] ?? '';
+        if (!str_contains($status, '200')) {
+            throw new RuntimeException('GitHub returned: ' . $status);
+        }
     }
 
     $data = json_decode($body, true);

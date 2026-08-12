@@ -1,10 +1,19 @@
 <?php
 require __DIR__ . '/../includes/bootstrap.php';
+require __DIR__ . '/../includes/visit.php';
 require_admin();
+
+ensure_profile_visit_table();
 
 $q = trim($_GET['q'] ?? '');
 $params = [];
-$sql = 'SELECT * FROM profiles';
+$sql = 'SELECT profiles.*, COALESCE(visits.visit_count, 0) AS visit_count, visits.last_visit
+        FROM profiles
+        LEFT JOIN (
+            SELECT profile_id, COUNT(*) AS visit_count, MAX(created_at) AS last_visit
+            FROM profile_visits
+            GROUP BY profile_id
+        ) visits ON visits.profile_id = profiles.id';
 if ($q !== '') {
     $sql .= ' WHERE github_username LIKE ? OR name LIKE ? OR work LIKE ? OR location LIKE ?';
     $like = '%' . $q . '%';
@@ -21,15 +30,15 @@ $profiles = $stmt->fetchAll();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="../assets/app.css">
+    <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>
 <body>
 <header class="topbar">
-    <a class="brand" href="../index.php">DEVSMW Admin</a>
+    <a class="brand" href="<?= e(site_url('index.php')) ?>">DEVSMW Admin</a>
     <nav>
-        <a href="../index.php">Public site</a>
-        <a href="change_password.php">Password</a>
-        <a href="logout.php">Logout</a>
+        <a href="<?= e(site_url('index.php')) ?>">Public site</a>
+        <a href="<?= e(site_url('admin/change_password.php')) ?>">Password</a>
+        <a href="<?= e(site_url('admin/logout.php')) ?>">Logout</a>
     </nav>
 </header>
 <main class="page">
@@ -64,6 +73,7 @@ $profiles = $stmt->fetchAll();
                 <th>Name</th>
                 <th>GitHub</th>
                 <th>Location</th>
+                <th>Visits</th>
                 <th>Visibility</th>
                 <th>Synced</th>
                 <th></th>
@@ -76,8 +86,11 @@ $profiles = $stmt->fetchAll();
                     <td><?= e($profile['name'] ?: '-') ?></td>
                     <td>@<?= e($profile['github_username']) ?></td>
                     <td><?= e($profile['location'] ?: '-') ?></td>
+                    <td><?= e((string) ($profile['visit_count'] ?: 0)) ?></td>
                     <td><?= e($profile['visibility']) ?></td>
-                    <td><?= e($profile['last_synced_at'] ?: 'Never') ?></td>
+                    <td><?= e($profile['last_synced_at'] ?: 'Never') ?>
+                        <?php if ($profile['last_visit']): ?><br><small class="muted"><?= e($profile['last_visit']) ?></small><?php endif; ?>
+                    </td>
                     <td class="actions">
                         <a href="profile_edit.php?id=<?= (int) $profile['id'] ?>">Edit</a>
                         <form method="post" action="refresh_github.php">

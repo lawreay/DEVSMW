@@ -59,6 +59,17 @@ function config(string $key, mixed $default = null): mixed
     return $value;
 }
 
+function site_url(string $path = ''): string
+{
+    $base = rtrim(config('app_url') ?: '/', '/');
+    return $base . '/' . ltrim($path, '/');
+}
+
+function asset(string $path): string
+{
+    return site_url(trim($path, '/'));
+}
+
 function db(): PDO
 {
     static $pdo = null;

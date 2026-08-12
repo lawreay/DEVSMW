@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
+require __DIR__ . '/includes/visit.php';
 
 $username = trim($_GET['u'] ?? '');
 $stmt = db()->prepare('SELECT * FROM profiles WHERE github_username = ? AND visibility = "published"');
@@ -11,6 +12,10 @@ if (!$profile) {
     exit('Profile not found.');
 }
 
+record_profile_visit((int) $profile['id']);
+$visitCount = get_profile_visit_count((int) $profile['id']);
+$lastVisit = get_profile_last_visit((int) $profile['id']);
+
 $projects = db()->prepare('SELECT * FROM projects WHERE profile_id = ? ORDER BY stars DESC, name LIMIT 20');
 $projects->execute([$profile['id']]);
 $projects = $projects->fetchAll();
@@ -21,12 +26,12 @@ $projects = $projects->fetchAll();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($profile['name'] ?: $profile['github_username']) ?> - <?= e(config('app_name')) ?></title>
-    <link rel="stylesheet" href="assets/app.css">
+    <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>
 <body>
 <header class="topbar">
-    <a class="brand" href="index.php">DEVSMW Profiles</a>
-    <nav><a href="index.php">Search</a></nav>
+    <a class="brand" href="<?= e(site_url('index.php')) ?>">DEVSMW Profiles</a>
+    <nav><a href="<?= e(site_url('index.php')) ?>">Search</a></nav>
 </header>
 
 <main class="page profile-page">
@@ -40,6 +45,13 @@ $projects = $projects->fetchAll();
             <div><dt>Email</dt><dd><?= $profile['email'] ? '<a href="mailto:' . e($profile['email']) . '">' . e($profile['email']) . '</a>' : 'Not publicly available' ?></dd></div>
             <div><dt>Phone</dt><dd><?= e($profile['phone'] ?: 'Not publicly available') ?></dd></div>
         </dl>
+        <div class="profile-meta">
+            <div><strong>Profile views</strong></div>
+            <div><?= (int) $visitCount ?> visit<?= $visitCount === 1 ? '' : 's' ?></div>
+            <?php if ($lastVisit): ?>
+                <div class="muted">Last visited <?= e(date('M j, Y H:i', strtotime($lastVisit))) ?></div>
+            <?php endif; ?>
+        </div>
         <div class="link-stack">
             <?php if ($profile['github_url']): ?><a href="<?= e($profile['github_url']) ?>" target="_blank" rel="noopener">GitHub</a><?php endif; ?>
             <?php if ($profile['website']): ?><a href="<?= e($profile['website']) ?>" target="_blank" rel="noopener">Website</a><?php endif; ?>

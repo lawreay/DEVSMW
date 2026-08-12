@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Login</title>
-    <link rel="stylesheet" href="../assets/app.css">
+    <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>
 <body class="admin-bg">
 <main class="auth-card">

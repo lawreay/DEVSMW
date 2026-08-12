@@ -55,12 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit <?= e($profile['github_username']) ?></title>
-    <link rel="stylesheet" href="../assets/app.css">
+    <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>
 <body>
 <header class="topbar">
-    <a class="brand" href="dashboard.php">DEVSMW Admin</a>
-    <nav><a href="../profile.php?u=<?= urlencode($profile['github_username']) ?>">View public</a></nav>
+    <a class="brand" href="<?= e(site_url('admin/dashboard.php')) ?>">DEVSMW Admin</a>
+    <nav><a href="<?= e(site_url('profile.php?u=' . urlencode($profile['github_username']))) ?>">View public</a></nav>
 </header>
 <main class="page">
     <section class="admin-head">

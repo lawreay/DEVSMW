@@ -36,13 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Change Password</title>
-    <link rel="stylesheet" href="../assets/app.css">
+    <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>
 <body>
 <header class="topbar">
-    <a class="brand" href="dashboard.php">DEVSMW Admin</a>
-    <nav><a href="dashboard.php">Dashboard</a></nav>
-</header>
+    <a class="brand" href="<?= e(site_url('admin/dashboard.php')) ?>">DEVSMW Admin</a>
+    <nav><a href="<?= e(site_url('admin/dashboard.php')) ?>">Dashboard</a></nav>
 <main class="page narrow-page">
     <section class="admin-head">
         <div>
