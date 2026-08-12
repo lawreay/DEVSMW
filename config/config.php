@@ -21,5 +21,6 @@ return [
         'bing' => [
             'endpoint' => getenv('BING_SEARCH_ENDPOINT') ?: 'https://api.bing.microsoft.com/v7.0/search',
         ],
+        // Use 'duckduckgo' for free external search results without a paid API key.
     ],
 ];

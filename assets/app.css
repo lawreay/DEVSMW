@@ -296,6 +296,18 @@ button:hover,
     margin-bottom: 24px;
 }
 
+.search-engine-badge span {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(21, 96, 106, 0.08);
+    border: 1px solid rgba(21, 96, 106, 0.18);
+    border-radius: 999px;
+    color: var(--accent-dark);
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 8px 12px;
+}
+
 .grid-2-column {
     display: grid;
     gap: 22px;

@@ -18,6 +18,7 @@ $profiles = $stmt->fetchAll();
 
 $externalSearch = false;
 $searchResults = [];
+$searchEngine = config('search.engine');
 if ($q !== '') {
     require __DIR__ . '/includes/search.php';
     if (search_is_external()) {
@@ -182,7 +183,10 @@ foreach ($techData as $tech) {
             <div class="section-head">
                 <div>
                     <h2>External search results</h2>
-                    <p>Results from the configured search provider for "<?= e($q) ?>".</p>
+                    <p>Free results from <?= e(ucfirst($searchEngine === 'duckduckgo' ? 'DuckDuckGo' : $searchEngine)) ?> for "<?= e($q) ?>".</p>
+                </div>
+                <div class="search-engine-badge">
+                    <span><?= e(strtoupper($searchEngine)) ?> (free)</span>
                 </div>
             </div>
             <?php if (count($searchResults) === 0): ?>
