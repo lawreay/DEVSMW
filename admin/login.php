@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/../includes/bootstrap.php';
+set_page_cache_control('admin');  // No caching for admin pages
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,8 +24,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
     <title>Admin Login</title>
     <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
+    <style>
+        .auth-card {
+            max-width: 400px;
+        }
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .auth-links a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        .auth-links span {
+            color: #666;
+            margin: 0 5px;
+        }
+    </style>
 </head>
 <body class="admin-bg">
 <main class="auth-card">
@@ -36,6 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label>Password <input name="password" type="password" required autocomplete="current-password"></label>
         <button type="submit">Sign in</button>
     </form>
+    <div class="auth-links">
+        <a href="<?= e(site_url('admin/forgot_password.php')) ?>">Forgot password?</a>
+    </div>
 </main>
 </body>
 </html>

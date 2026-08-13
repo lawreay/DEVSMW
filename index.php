@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
+set_page_cache_control('public');  // 5 min cache for search engines to see fresh metadata
 
 $q = trim($_GET['q'] ?? '');
 $params = [];
@@ -56,13 +57,38 @@ foreach ($techData as $tech) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= e(config('app_name')) ?></title>
+    <title>DEVSMW - Malawi's Top Developer Profiles & Tech Directory</title>
+    <?= meta_description('Discover and connect with Malawi\'s best software developers, entrepreneurs, and tech professionals. Explore top-ranked profiles, technologies, projects, and tech news.') . "\n    " ?>
+    <?= og_tags([
+        'title' => 'DEVSMW - Malawi\'s Top Developer Profiles',
+        'description' => 'Showcase and directory of Malawi\'s developer talent, technologies, and projects.',
+        'type' => 'website',
+        'url' => site_url('index.php'),
+    ]) . "\n    " ?>
+    <?= twitter_card([
+        'title' => 'DEVSMW - Malawi\'s Top Developer Profiles',
+        'description' => 'Discover Malawi\'s best developers and tech ecosystem.',
+    ]) . "\n    " ?>
+    <?= canonical_url(site_url('index.php')) . "\n    " ?>
+    <meta name="keywords" content="Malawi developers, software engineers, tech community, developer directory, Lilongwe, Blantyre, tech profiles">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="language" content="English">
+    <meta name="author" content="DEVSMW Community">
+    <link rel="icon" href="<?= e(asset('assets/favicon.ico')) ?>">
     <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>
-<body>
+<body class="home-view">
+<?= schema_organization() . "\n"?>
+</body>
 <header class="topbar">
-    <a class="brand" href="<?= e(site_url('index.php')) ?>">DEVSMW Profiles</a>
+    <a class="brand" href="<?= e(site_url('index.php')) ?>">
+        <span class="brand-mark">D</span>
+        <span>DEVSMW Profiles</span>
+    </a>
     <nav>
+        <a class="active" href="<?= e(site_url('index.php')) ?>">Home</a>
+        <a href="<?= e(site_url('profiles.php')) ?>">Profiles</a>
+        <a href="#news">News</a>
         <a href="<?= e(site_url('docs/project-goal.md')) ?>">Docs</a>
     </nav>
 </header>
@@ -77,6 +103,12 @@ foreach ($techData as $tech) {
                 <input type="search" name="q" value="<?= e($q) ?>" placeholder="Search by name, skill, project, location...">
                 <button type="submit">Search</button>
             </form>
+            <div class="category-row" aria-label="Popular categories">
+                <a href="profiles.php?q=JavaScript">JavaScript</a>
+                <a href="profiles.php?q=Python">Python</a>
+                <a href="profiles.php?q=Laravel">Laravel</a>
+                <a href="profiles.php?q=DevOps">DevOps</a>
+            </div>
             <div class="hero-stats">
                 <div>
                     <span class="stat-value"><?= $top50Count ?>+</span>
@@ -115,7 +147,7 @@ foreach ($techData as $tech) {
                 <h2>Top 10 ranked profiles</h2>
                 <p>Discover the highest-ranked published profiles and what makes them stand out.</p>
             </div>
-            <a class="button-link" href="index.php">Browse all profiles</a>
+            <a class="button-link" href="profiles.php">Browse all profiles</a>
         </div>
         <div class="top-profiles-grid">
             <?php foreach ($topProfiles as $profile): ?>

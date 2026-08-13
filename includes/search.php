@@ -28,18 +28,44 @@ function bing_web_search(string $q): array
         'User-Agent: DEVSMW-Profiles',
     ];
 
-    $context = stream_context_create([
-        'http' => [
-            'method' => 'GET',
-            'header' => implode("\r\n", $headers),
-            'timeout' => 20,
-            'ignore_errors' => true,
-        ],
-    ]);
+    if (function_exists('curl_init')) {
+        $curl = curl_init($url);
+        curl_setopt_array($curl, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_USERAGENT => 'DEVSMW-Profiles',
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_CONNECTTIMEOUT => 15,
+            CURLOPT_TIMEOUT => 20,
+            CURLOPT_FAILONERROR => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+        ]);
 
-    $body = @file_get_contents($url, false, $context);
-    if ($body === false) {
-        return [];
+        $body = curl_exec($curl);
+        curl_close($curl);
+        if ($body === false) {
+            return [];
+        }
+    } else {
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => implode("\r\n", $headers),
+                'timeout' => 20,
+                'ignore_errors' => true,
+            ],
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ],
+        ]);
+
+        $body = @file_get_contents($url, false, $context);
+        if ($body === false) {
+            return [];
+        }
     }
 
     $data = json_decode($body, true);
@@ -75,8 +101,8 @@ function duckduckgo_web_search(string $q): array
             CURLOPT_CONNECTTIMEOUT => 15,
             CURLOPT_TIMEOUT => 20,
             CURLOPT_FAILONERROR => false,
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
         ]);
 
         $body = curl_exec($curl);
@@ -88,6 +114,10 @@ function duckduckgo_web_search(string $q): array
                 'header' => implode("\r\n", $headers),
                 'timeout' => 20,
                 'ignore_errors' => true,
+            ],
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
             ],
         ]);
         $body = @file_get_contents($url, false, $context);

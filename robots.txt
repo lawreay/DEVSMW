@@ -1,0 +1,17 @@
+# DEVSMW - Malawi Developer Profiles
+# Search engine crawling rules
+
+# Allow all bots to crawl the site
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /config/
+Disallow: /database/
+Disallow: /scripts/
+
+# Crawl delay (optional - in seconds)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://localhost/DEVSMW/sitemap.xml

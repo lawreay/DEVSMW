@@ -4,6 +4,26 @@ declare(strict_types=1);
 
 session_start();
 
+/**
+ * Set cache control headers for page type
+ * Public pages have short TTL so search engines see fresh SEO metadata
+ * Admin pages don't cache
+ */
+function set_page_cache_control(string $type = 'public'): void
+{
+    if (headers_sent()) {
+        return;
+    }
+
+    match ($type) {
+        'public' => header('Cache-Control: public, max-age=300, s-maxage=300'),  // 5 min for users, 5 min for proxies
+        'sitemap' => header('Cache-Control: public, max-age=86400, s-maxage=86400'),  // 24 hours
+        'admin' => header('Cache-Control: no-cache, no-store, must-revalidate, private, max-age=0'),
+        'static' => header('Cache-Control: public, max-age=2592000, immutable'),  // 30 days, immutable
+        default => header('Cache-Control: public, max-age=300'),
+    };
+}
+
 load_dotenv(__DIR__ . '/../.env');
 
 $config = require __DIR__ . '/../config/config.php';
@@ -230,4 +250,171 @@ function nullable_field(string $value): ?string
 {
     $value = trim($value);
     return $value === '' ? null : $value;
+}
+
+/**
+ * Generate meta description tag (150-160 chars ideal)
+ */
+function meta_description(string $description): string
+{
+    $clean = strip_tags($description);
+    $clean = preg_replace('/\s+/', ' ', trim($clean));
+    $truncated = mb_substr($clean, 0, 160);
+    return '<meta name="description" content="' . e($truncated) . '">';
+}
+
+/**
+ * Generate Open Graph meta tags for social sharing
+ */
+function og_tags(array $data): string
+{
+    $defaults = [
+        'title' => config('app_name'),
+        'description' => 'Discover Malawi\'s top developer profiles, technologies, and projects.',
+        'type' => 'website',
+        'url' => site_url(),
+        'image' => site_url('assets/og-image.png'),
+    ];
+    $data = array_merge($defaults, array_filter($data));
+
+    $tags = [];
+    foreach ($data as $key => $value) {
+        if ($value) {
+            $tags[] = '<meta property="og:' . e($key) . '" content="' . e($value) . '">';
+        }
+    }
+    return implode("\n    ", $tags);
+}
+
+/**
+ * Generate Twitter Card meta tags
+ */
+function twitter_card(array $data): string
+{
+    $defaults = [
+        'card' => 'summary_large_image',
+        'title' => config('app_name'),
+        'description' => 'Discover Malawi\'s top developer profiles, technologies, and projects.',
+        'image' => site_url('assets/og-image.png'),
+    ];
+    $data = array_merge($defaults, array_filter($data));
+
+    $tags = [];
+    foreach ($data as $key => $value) {
+        if ($value) {
+            $tags[] = '<meta name="twitter:' . e($key) . '" content="' . e($value) . '">';
+        }
+    }
+    return implode("\n    ", $tags);
+}
+
+/**
+ * Generate JSON-LD structured data for Organization
+ */
+function schema_organization(): string
+{
+    $schema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Organization',
+        'name' => config('app_name'),
+        'url' => site_url(),
+        'description' => 'Showcase and directory of Malawi\'s top developer talent, technologies, and projects.',
+        'sameAs' => [
+            'https://github.com',
+        ],
+        'address' => [
+            '@type' => 'PostalAddress',
+            'addressCountry' => 'MW',
+            'addressLocality' => 'Malawi',
+        ],
+    ];
+    return '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>';
+}
+
+/**
+ * Generate JSON-LD structured data for Person profile
+ */
+function schema_person(array $profile): string
+{
+    $schema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Person',
+        'name' => $profile['name'] ?: $profile['github_username'],
+        'jobTitle' => $profile['title'] ?: '',
+        'description' => $profile['bio'] ?: '',
+        'url' => site_url('profile.php?u=' . urlencode($profile['github_username'])),
+        'image' => 'https://github.com/' . $profile['github_username'] . '.png',
+    ];
+
+    if ($profile['location']) {
+        $schema['location'] = [
+            '@type' => 'Place',
+            'name' => $profile['location'],
+        ];
+    }
+
+    if ($profile['email']) {
+        $schema['email'] = $profile['email'];
+    }
+
+    if ($profile['website']) {
+        $schema['sameAs'] = [$profile['website']];
+    }
+
+    if ($profile['linkedin_url']) {
+        $schema['sameAs'][] = $profile['linkedin_url'];
+    }
+
+    return '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>';
+}
+
+/**
+ * Generate canonical URL meta tag
+ */
+function canonical_url(string $url): string
+{
+    return '<link rel="canonical" href="' . e($url) . '">';
+}
+
+/**
+ * Format time ago (e.g., "2 hours ago", "3 days ago")
+ * Useful for showing when profile was last updated
+ */
+function time_ago(string $dateTime): string
+{
+    $time = strtotime($dateTime);
+    $now = time();
+    $secondsAgo = $now - $time;
+
+    if ($secondsAgo < 60) {
+        return 'just now';
+    }
+
+    $minutesAgo = (int) ($secondsAgo / 60);
+    if ($minutesAgo < 60) {
+        return $minutesAgo === 1 ? '1 minute ago' : $minutesAgo . ' minutes ago';
+    }
+
+    $hoursAgo = (int) ($secondsAgo / 3600);
+    if ($hoursAgo < 24) {
+        return $hoursAgo === 1 ? '1 hour ago' : $hoursAgo . ' hours ago';
+    }
+
+    $daysAgo = (int) ($secondsAgo / 86400);
+    if ($daysAgo < 30) {
+        return $daysAgo === 1 ? '1 day ago' : $daysAgo . ' days ago';
+    }
+
+    $monthsAgo = (int) ($secondsAgo / 2592000);
+    if ($monthsAgo < 12) {
+        return $monthsAgo === 1 ? '1 month ago' : $monthsAgo . ' months ago';
+    }
+
+    $yearsAgo = (int) ($secondsAgo / 31536000);
+    return $yearsAgo === 1 ? '1 year ago' : $yearsAgo . ' years ago';
+}
+    }
+
+    $yearsAgo = (int) ($secondsAgo / 31536000);
+    return $yearsAgo === 1 ? '1 year ago' : $yearsAgo . ' years ago';
 }

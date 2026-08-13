@@ -1,6 +1,8 @@
 <?php
 require __DIR__ . '/../includes/bootstrap.php';
+require __DIR__ . '/../includes/rank.php';
 require_admin();
+set_page_cache_control('admin');  // No caching for admin pages
 
 $id = (int) ($_GET['id'] ?? $_POST['id'] ?? 0);
 $stmt = db()->prepare('SELECT * FROM profiles WHERE id = ?');
@@ -18,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $allowedVisibility = ['published', 'draft', 'hidden'];
     $consentStatus = in_array($_POST['consent_status'] ?? '', $allowedConsent, true) ? $_POST['consent_status'] : 'needs_review';
     $visibility = in_array($_POST['visibility'] ?? '', $allowedVisibility, true) ? $_POST['visibility'] : 'draft';
+    $newRank = $_POST['rank_private'] !== '' ? ((int) $_POST['rank_private'] ?: null) : null;
 
     $update = db()->prepare(
         'UPDATE profiles SET
@@ -42,6 +45,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $visibility,
         $id,
     ]);
+
+    if ($newRank !== $profile['rank_private']) {
+        try {
+            update_profile_rank($id, $newRank);
+        } catch (Exception $e) {
+            flash('Rank update failed: ' . $e->getMessage(), 'error');
+            redirect('profile_edit.php?id=' . $id);
+        }
+    }
+
     $stmt->execute([$id]);
     $after = $stmt->fetch() ?: [];
     audit_log('update_profile', 'profile', $id, $before, $after);
@@ -54,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
     <title>Edit <?= e($profile['github_username']) ?></title>
     <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>
@@ -97,6 +111,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <option value="<?= e($visibility) ?>" <?= $profile['visibility'] === $visibility ? 'selected' : '' ?>><?= e($visibility) ?></option>
                 <?php endforeach; ?>
             </select>
+        </label>
+        <label>Rank (optional: leave empty to unrank)
+            <input type="number" name="rank_private" value="<?= $profile['rank_private'] ?: '' ?>" min="1" max="9999" placeholder="Enter rank number or leave empty">
+            <small>Changing rank will automatically reorder other profiles to fill gaps.</small>
         </label>
         <button type="submit">Save profile</button>
     </form>

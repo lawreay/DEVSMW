@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../includes/bootstrap.php';
 require_admin();
+set_page_cache_control('admin');  // No caching for admin pages
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -35,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
     <title>Change Password</title>
     <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>

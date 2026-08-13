@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../includes/bootstrap.php';
 require __DIR__ . '/../includes/visit.php';
+set_page_cache_control('admin');  // No caching for admin pages
 require_admin();
 
 ensure_profile_visit_table();
@@ -29,6 +30,7 @@ $profiles = $stmt->fetchAll();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="<?= e(asset('assets/app.css')) ?>">
 </head>
@@ -58,6 +60,7 @@ $profiles = $stmt->fetchAll();
                 <?= csrf_field() ?>
                 <button type="submit">Refresh All GitHub</button>
             </form>
+            <a href="<?= e(site_url('admin/smtp_config.php')) ?>" class="btn-link">Email Settings</a>
             <form class="search-form compact" method="get">
                 <input type="search" name="q" value="<?= e($q) ?>" placeholder="Search profiles">
                 <button type="submit">Search</button>
@@ -75,6 +78,7 @@ $profiles = $stmt->fetchAll();
                 <th>Location</th>
                 <th>Visits</th>
                 <th>Visibility</th>
+                <th>SEO Updated</th>
                 <th>Synced</th>
                 <th></th>
             </tr>
@@ -88,6 +92,9 @@ $profiles = $stmt->fetchAll();
                     <td><?= e($profile['location'] ?: '-') ?></td>
                     <td><?= e((string) ($profile['visit_count'] ?: 0)) ?></td>
                     <td><?= e($profile['visibility']) ?></td>
+                    <td><small><?= time_ago($profile['updated_at'] ?? date('Y-m-d H:i:s')) ?></small>
+                        <br><small class="muted"><?= e(substr($profile['updated_at'] ?? '', 0, 10)) ?></small>
+                    </td>
                     <td><?= e($profile['last_synced_at'] ?: 'Never') ?>
                         <?php if ($profile['last_visit']): ?><br><small class="muted"><?= e($profile['last_visit']) ?></small><?php endif; ?>
                     </td>
