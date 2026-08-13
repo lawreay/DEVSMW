@@ -1,0 +1,38 @@
+Attached Element Context from Integrated Browser
+
+Element: body
+
+URL: http://localhost/DEVSMW/admin/refresh_all_github.php
+
+HTML Path: body
+
+Outer HTML:
+```html
+<body><br>
+<font size="1"><table class="xdebug-error xe-fatal-error" dir="ltr" border="1" cellspacing="0" cellpadding="1">
+<tbody><tr><th align="left" bgcolor="#f57900" colspan="5"><span style="background-color: #cc0000; color: #fce94f; font-size: x-large;">( ! )</span> Fatal error: Maximum execution time of 120 seconds exceeded in C:\wamp64\www\DEVSMW\includes\github.php on line <i>27</i></th></tr>
+<tr><th align="left" bgcolor="#e9b96e" colspan="5">Call Stack</th></tr>
+<tr><th align="center" bgcolor="#eeeeec">#</th><th align="left" bgcolor="#eeeeec">Time</th><th align="left" bgcolor="#eeeeec">Memory</th><th align="left" bgcolor="#eeeeec">Function</th><th align="left" bgcolor="#eeeeec">Location</th></tr>
+<tr><td bgcolor="#eeeeec" align="center">1</td><td bgcolor="#eeeeec" align="center">0.0050</td><td bgcolor="#eeeeec" align="right">458040</td><td bgcolor="#eeeeec">{main}(  )</td><td title="C:\wamp64\www\DEVSMW\admin\refresh_all_github.php" bgcolor="#eeeeec">...\refresh_all_github.php<b>:</b>0</td></tr>
+<tr><td bgcolor="#eeeeec" align="center">2</td><td bgcolor="#eeeeec" align="center">119.6503</td><td bgcolor="#eeeeec" align="right">963536</td><td bgcolor="#eeeeec">refresh_profile_from_github( <span>$profileId = </span><span>4</span> )</td><td title="C:\wamp64\www\DEVSMW\admin\refresh_all_github.php" bgcolor="#eeeeec">...\refresh_all_github.php<b>:</b>13</td></tr>
+<tr><td bgcolor="#eeeeec" align="center">3</td><td bgcolor="#eeeeec" align="center">119.6512</td><td bgcolor="#eeeeec" align="right">986144</td><td bgcolor="#eeeeec">github_request( <span>$url = </span><span>'https://api.github.com/users/AllanKantombera'</span> )</td><td title="C:\wamp64\www\DEVSMW\includes\github.php" bgcolor="#eeeeec">...\github.php<b>:</b>56</td></tr>
+</tbody></table></font>
+</body>
+```
+
+Dimensions:
+- top: 0px
+- left: 0px
+- width: 1238px
+- height: 718px
+
+CSS:
+```css
+
+
+/* Resolved values */
+margin: 8px /*UA*/;
+display: block;
+height: 702px;
+width: 1222px;
+```

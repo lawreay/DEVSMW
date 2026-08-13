@@ -2,6 +2,11 @@
 require __DIR__ . '/includes/bootstrap.php';
 
 try {
+    // Drop existing tables
+    echo "Dropping existing tables if they exist...\n";
+    db()->exec('DROP TABLE IF EXISTS password_reset_tokens');
+    db()->exec('DROP TABLE IF EXISTS email_config');
+    
     $migration = file_get_contents(__DIR__ . '/database/migrations/002_add_email_tables.sql');
     
     // Split multiple statements and execute each

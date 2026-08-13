@@ -413,8 +413,3 @@ function time_ago(string $dateTime): string
     $yearsAgo = (int) ($secondsAgo / 31536000);
     return $yearsAgo === 1 ? '1 year ago' : $yearsAgo . ' years ago';
 }
-    }
-
-    $yearsAgo = (int) ($secondsAgo / 31536000);
-    return $yearsAgo === 1 ? '1 year ago' : $yearsAgo . ' years ago';
-}

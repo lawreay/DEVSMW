@@ -24,7 +24,7 @@ INSERT IGNORE INTO email_config (id) VALUES (1);
 -- Stores password reset tokens for admins
 CREATE TABLE IF NOT EXISTS password_reset_tokens (
     token_hash VARCHAR(64) PRIMARY KEY COMMENT 'SHA256 hash of the reset token',
-    admin_user_id INT NOT NULL,
+    admin_user_id INT UNSIGNED NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP NOT NULL COMMENT 'Token expires after 1 hour',
     used_at TIMESTAMP NULL COMMENT 'When the token was used to reset password',
