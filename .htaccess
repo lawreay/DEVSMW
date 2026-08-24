@@ -1,6 +1,5 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /DEVSMW/
 
     # Rewrite sitemap.xml to sitemap.xml.php
     RewriteRule ^sitemap\.xml$ sitemap.xml.php [L]
@@ -12,6 +11,9 @@
     # Improve SEO: redirect www to non-www (if needed)
     # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
     # RewriteRule ^(.*)$ http://%1$1 [R=301,L]
+
+    # Keep environment and configuration files out of the public web root.
+    RewriteRule ^(?:\.env|config/|database/|includes/)(?:/|$) - [F,L,NC]
 </IfModule>
 
 # Enable compression for better performance
