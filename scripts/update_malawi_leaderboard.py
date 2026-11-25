@@ -73,7 +73,7 @@ def discover_candidates(token: str) -> tuple[list[dict], int]:
 
     for page in range(1, 11):
         query = urlencode({
-            "q": "location:Malawi",
+            "q": "location:Malawi type:user",
             "sort": "followers",
             "order": "desc",
             "per_page": 100,
