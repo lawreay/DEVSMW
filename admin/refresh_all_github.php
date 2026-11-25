@@ -40,6 +40,7 @@ if (!is_array($state)) {
 }
 
 $submittedCursor = isset($_POST['cursor_id']) ? max(0, (int) $_POST['cursor_id']) : 0;
+$hasMore = true;
 
 // A browser retry can submit an older form. Do not process the same batch twice.
 if ($submittedCursor === (int) $state['cursor_id']) {
@@ -52,6 +53,7 @@ if ($submittedCursor === (int) $state['cursor_id']) {
     );
     $stmt->execute([(int) $state['cursor_id']]);
     $profiles = $stmt->fetchAll();
+    $hasMore = count($profiles) === GITHUB_REFRESH_BATCH_SIZE;
 
     foreach ($profiles as $profile) {
         $state['cursor_id'] = (int) $profile['id'];
@@ -75,7 +77,7 @@ if ($submittedCursor === (int) $state['cursor_id']) {
     $_SESSION[$stateKey] = $state;
 }
 
-$done = count($profiles ?? []) < GITHUB_REFRESH_BATCH_SIZE;
+$done = !$hasMore;
 $percentage = (int) ($state['total'] > 0
     ? min(100, round(($state['processed'] / $state['total']) * 100))
     : 100);
