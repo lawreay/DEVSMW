@@ -1,6 +1,9 @@
 name: Update Malawi GitHub Leaderboard
 
 on:
+  push:
+    branches:
+      - feature/malawi-contributions-leaderboard
   schedule:
     - cron: '17 4 * * 1'
   workflow_dispatch:
