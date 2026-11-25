@@ -17,7 +17,14 @@ try {
     $loadError = true;
 }
 
-$allUsers = $snapshot['ranked_users'] ?? [];
+$allUsers = [];
+foreach (($snapshot['ranked_users'] ?? []) as $rankIndex => $user) {
+    if (!is_array($user)) {
+        continue;
+    }
+    $user['_rank'] = $rankIndex + 1;
+    $allUsers[] = $user;
+}
 $query = trim((string) ($_GET['q'] ?? ''));
 $page = max(1, (int) ($_GET['page'] ?? 1));
 $perPage = 25;
@@ -175,7 +182,7 @@ function leaderboard_avatar_url(array $user): ?string
                     <tbody>
                     <?php foreach ($visibleUsers as $index => $user): ?>
                         <?php
-                            $absoluteRank = ($page - 1) * $perPage + $index + 1;
+                            $absoluteRank = (int) ($user['_rank'] ?? (($page - 1) * $perPage + $index + 1));
                             $login = (string) ($user['login'] ?? '');
                             $displayName = trim((string) ($user['name'] ?? '')) ?: $login;
                             $profileUrl = leaderboard_profile_url($user);
