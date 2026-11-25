@@ -1,5 +1,7 @@
 # DEVSMW Profiles
 
+[![PHP Lint](https://github.com/lawreay/DEVSMW/actions/workflows/php-lint.yml/badge.svg?branch=main)](https://github.com/lawreay/DEVSMW/actions/workflows/php-lint.yml) [![Stars](https://img.shields.io/github/stars/lawreay/DEVSMW?style=flat)](https://github.com/lawreay/DEVSMW/stargazers) [![Forks](https://img.shields.io/github/forks/lawreay/DEVSMW?style=flat)](https://github.com/lawreay/DEVSMW/network/members) [![Last Commit](https://img.shields.io/github/last-commit/lawreay/DEVSMW?style=flat)](https://github.com/lawreay/DEVSMW/commits/main)
+
 DEVSMW Profiles is a PHP/MySQL web app for searching and managing Malawi developer profiles.
 
 ## What Is Included
