@@ -88,6 +88,7 @@ foreach ($techData as $tech) {
     <nav>
         <a class="active" href="<?= e(site_url('index.php')) ?>">Home</a>
         <a href="<?= e(site_url('profiles.php')) ?>">Profiles</a>
+        <a href="<?= e(site_url('leaderboard.php')) ?>">Leaderboard</a>
         <a href="#news">News</a>
         <a href="<?= e(site_url('docs/project-goal.md')) ?>">Docs</a>
     </nav>
@@ -125,6 +126,7 @@ foreach ($techData as $tech) {
             </div>
             <div class="hero-actions">
                 <a class="button-link secondary" href="profiles.php">Show full list</a>
+                <a class="button-link" href="leaderboard.php">View GitHub leaderboard</a>
             </div>
         </div>
         <div class="hero-aside">
