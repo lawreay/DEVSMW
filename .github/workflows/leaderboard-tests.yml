@@ -3,7 +3,7 @@ name: Leaderboard Collector Tests
 on:
   push:
     branches:
-      - feature/malawi-contributions-leaderboard
+      - feature/malawi-contributions-leaderboard-ready
       - main
   pull_request:
 
