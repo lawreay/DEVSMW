@@ -1,0 +1,58 @@
+name: Update Malawi GitHub Leaderboard
+
+on:
+  push:
+    branches:
+      - feature/malawi-contributions-leaderboard
+    paths:
+      - .github/workflows/update-malawi-leaderboard.yml
+      - scripts/update_malawi_leaderboard.py
+      - data/leaderboards/malawi.json
+  schedule:
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: malawi-leaderboard
+  cancel-in-progress: true
+
+jobs:
+  update-leaderboard:
+    name: Collect public contributions
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test leaderboard collector
+        run: python -m unittest discover -s tests -p 'test_*.py'
+
+      - name: Build leaderboard snapshot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/update_malawi_leaderboard.py
+
+      - name: Validate snapshot JSON
+        run: python -m json.tool data/leaderboards/malawi.json > /dev/null
+
+      - name: Commit updated snapshot
+        run: |
+          if git diff --quiet -- data/leaderboards/malawi.json; then
+            echo "Leaderboard snapshot is unchanged."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/leaderboards/malawi.json
+          git commit -m "chore: update Malawi GitHub leaderboard"
+          git push
