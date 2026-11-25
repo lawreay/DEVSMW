@@ -3,7 +3,7 @@ name: Update Malawi GitHub Leaderboard
 on:
   push:
     branches:
-      - feature/malawi-contributions-leaderboard
+      - feature/malawi-contributions-leaderboard-ready
     paths:
       - .github/workflows/update-malawi-leaderboard.yml
       - scripts/update_malawi_leaderboard.py
