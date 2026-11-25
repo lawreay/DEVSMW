@@ -26,6 +26,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Test leaderboard collector
+        run: python -m unittest discover -s tests -p 'test_*.py'
+
       - name: Build leaderboard snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
