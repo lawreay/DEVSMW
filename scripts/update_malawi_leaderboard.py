@@ -80,6 +80,8 @@ def discover_candidates(token: str) -> tuple[list[dict], int]:
             "page": page,
         })
         result = request_json(f"{API_ROOT}/search/users?{query}", token)
+        if result.get("incomplete_results"):
+            raise GitHubApiError("GitHub marked the user search results as incomplete; refusing to publish a partial ranking.")
         total_count = int(result.get("total_count", 0))
         items = result.get("items", [])
         if not isinstance(items, list):
@@ -131,13 +133,19 @@ def fetch_contributions(
     for offset in range(0, len(candidates), BATCH_SIZE):
         batch = candidates[offset:offset + BATCH_SIZE]
         query = contribution_query(batch, start, end)
-        result = request_json(GRAPHQL_URL, token, {"query": query})
-        if result.get("errors"):
+        result = None
+        for attempt in range(4):
+            result = request_json(GRAPHQL_URL, token, {"query": query})
+            errors = result.get("errors", [])
+            if not errors:
+                break
             message = "; ".join(
                 str(error.get("message", "GraphQL error"))
-                for error in result["errors"]
+                for error in errors
             )
-            raise GitHubApiError(f"GitHub GraphQL query failed: {message}")
+            if "rate limit" not in message.lower() or attempt == 3:
+                raise GitHubApiError(f"GitHub GraphQL query failed: {message}")
+            time.sleep(2 ** (attempt + 1))
 
         data = result.get("data")
         if not isinstance(data, dict):
