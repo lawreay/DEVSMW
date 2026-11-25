@@ -2,6 +2,9 @@ name: Leaderboard Collector Tests
 
 on:
   push:
+    branches:
+      - feature/malawi-contributions-leaderboard
+      - main
   pull_request:
 
 permissions:
