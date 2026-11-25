@@ -68,6 +68,12 @@ if ($submittedCursor === (int) $state['cursor_id']) {
                 'DEVSMW GitHub refresh failed for profile #' .
                 (int) $profile['id'] . ': ' . $e->getMessage()
             );
+
+            // Stop the job if GitHub rejects authentication or rate limits the token.
+            if (str_contains($e->getMessage(), 'HTTP 401') || str_contains($e->getMessage(), 'HTTP 403')) {
+                $state['blocked'] = true;
+                break;
+            }
         }
 
         // Small pause between profiles to avoid making requests too aggressively.
@@ -77,7 +83,7 @@ if ($submittedCursor === (int) $state['cursor_id']) {
     $_SESSION[$stateKey] = $state;
 }
 
-$done = !$hasMore;
+$done = !$hasMore || !empty($state['blocked']);
 $percentage = (int) ($state['total'] > 0
     ? min(100, round(($state['processed'] / $state['total']) * 100))
     : 100);
@@ -98,10 +104,17 @@ if ($done) {
 
     unset($_SESSION[$stateKey]);
 
-    flash(
-        "GitHub refresh complete. {$state['success']} updated, {$state['failed']} failed.",
-        $state['failed'] > 0 ? 'warning' : 'info'
-    );
+    if (!empty($state['blocked'])) {
+        flash(
+            "GitHub stopped the refresh because of an authentication or rate-limit response. {$state['processed']} of {$state['total']} profiles processed; {$state['success']} updated, {$state['failed']} failed. Check GITHUB_TOKEN and GitHub API limits before retrying.",
+            'warning'
+        );
+    } else {
+        flash(
+            "GitHub refresh complete. {$state['success']} updated, {$state['failed']} failed.",
+            $state['failed'] > 0 ? 'warning' : 'info'
+        );
+    }
     redirect('dashboard.php');
 }
 
