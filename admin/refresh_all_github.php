@@ -77,7 +77,14 @@ if ($submittedCursor === (int) $state['cursor_id']) {
                 $httpStatus = (int) $matches[1];
             }
 
-            if (in_array($httpStatus, [401, 403, 429], true)) {
+            $isTransportFailure = str_starts_with($e->getMessage(), 'GitHub request failed');
+            $isServerFailure = $httpStatus !== null && $httpStatus >= 500 && $httpStatus <= 599;
+
+            if (
+                $isTransportFailure
+                || in_array($httpStatus, [401, 403, 408, 429], true)
+                || $isServerFailure
+            ) {
                 $state['blocked'] = true;
                 break;
             }
@@ -113,7 +120,7 @@ if ($done) {
 
     if (!empty($state['blocked'])) {
         flash(
-            "GitHub stopped the refresh because of an authentication or rate-limit response. {$state['processed']} of {$state['total']} profiles processed; {$state['success']} updated, {$state['failed']} failed. Check GITHUB_TOKEN and GitHub API limits before retrying.",
+            "GitHub refresh stopped because a request could not continue due to authentication, rate limiting, or a network/server error. {$state['processed']} of {$state['total']} profiles processed; {$state['success']} updated, {$state['failed']} failed. Check GITHUB_TOKEN and GitHub API limits before retrying.",
             'warning'
         );
     } else {
