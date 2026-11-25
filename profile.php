@@ -87,6 +87,7 @@ $initials = mb_strtoupper($initials ?: mb_substr($profile['github_username'], 0,
     <nav>
         <a href="<?= e(site_url('index.php')) ?>">Home</a>
         <a href="<?= e(site_url('profiles.php')) ?>">Profiles</a>
+        <a href="<?= e(site_url('leaderboard.php')) ?>">Leaderboard</a>
         <a class="active" href="<?= e(site_url('profile.php?u=' . urlencode($profile['github_username']))) ?>">Profile</a>
     </nav>
 </header>
