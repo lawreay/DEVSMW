@@ -14,13 +14,13 @@ Start WAMP's MySQL or MariaDB service first.
 Import the schema from the project root:
 
 ```powershell
-& 'C:\\wamp64\\bin\\mariadb\\mariadb11.4.9\\bin\\mysql.exe' -uroot < database\\schema.sql
+cmd /c '"C:\\wamp64\\bin\\mariadb\\mariadb11.4.9\\bin\\mysql.exe" -uroot < "database\\schema.sql"'
 ```
 
 Alternative MySQL path:
 
 ```powershell
-& 'C:\\wamp64\\bin\\mysql\\mysql8.4.7\\bin\\mysql.exe' -uroot < database\\schema.sql
+cmd /c '"C:\\wamp64\\bin\\mysql\\mysql8.4.7\\bin\\mysql.exe" -uroot < "database\\schema.sql"'
 ```
 
 If your local MySQL account requires a password, add the appropriate MySQL command-line option when importing the schema.
