@@ -2,13 +2,13 @@
 
 return [
     'app_name' => 'DEVSMW Profiles',
-    'app_url' => getenv('APP_URL') ?: 'https://developersmw.lovestoblog.com',
+    'app_url' => rtrim(getenv('APP_URL') ?: 'http://localhost/DEVSMW', '/'),
     'db' => [
-        'host' => getenv('DB_HOST') ?: 'sql108.infinityfree.com',
+        'host' => getenv('DB_HOST') ?: '127.0.0.1',
         'port' => (int) (getenv('DB_PORT') ?: 3306),
-        'name' => getenv('DB_NAME') ?: 'if0_42702166_devsmw',
-        'user' => getenv('DB_USER') ?: 'if0_42702166',
-        'pass' => getenv('DB_PASS') ?: 'rw7vsdZIUJ',
+        'name' => getenv('DB_NAME') ?: 'devsmw_profiles',
+        'user' => getenv('DB_USER') ?: 'root',
+        'pass' => getenv('DB_PASS') !== false ? getenv('DB_PASS') : '',
         'charset' => 'utf8mb4',
     ],
     'github' => [
