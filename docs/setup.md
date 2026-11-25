@@ -14,13 +14,13 @@ Start WAMP's MySQL or MariaDB service first.
 Import the schema from the project root:
 
 ```powershell
-cmd /c '"C:\\wamp64\\bin\\mariadb\\mariadb11.4.9\\bin\\mysql.exe" -uroot < "database\\schema.sql"'
+cmd /c '"C:\wamp64\bin\mariadb\mariadb11.4.9\bin\mysql.exe" -uroot < "database\schema.sql"'
 ```
 
 Alternative MySQL path:
 
 ```powershell
-cmd /c '"C:\\wamp64\\bin\\mysql\\mysql8.4.7\\bin\\mysql.exe" -uroot < "database\\schema.sql"'
+cmd /c '"C:\wamp64\bin\mysql\mysql8.4.7\bin\mysql.exe" -uroot < "database\schema.sql"'
 ```
 
 If your local MySQL account requires a password, add the appropriate MySQL command-line option when importing the schema.
@@ -67,7 +67,7 @@ Bing search is optional. The default search engine is DuckDuckGo. To use Bing, s
 After the schema and environment configuration are ready:
 
 ```powershell
-php scripts\\import_markdown_profiles.php
+php scripts\import_markdown_profiles.php
 ```
 
 ## Run
