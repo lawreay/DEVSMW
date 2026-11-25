@@ -60,6 +60,24 @@ GITHUB_TOKEN=your_github_token
 
 Keep the token private. Do not paste it into source files or commit it.
 
+### WAMP TLS Certificate Configuration
+
+If GitHub refresh fails with `unable to get local issuer certificate`, configure PHP's CA bundle rather than disabling SSL verification:
+
+1. Download the current CA bundle from [curl.se/ca/cacert.pem](https://curl.se/ca/cacert.pem).
+2. Save it outside the public project directory, for example:
+   `C:\\wamp64\\bin\\php\\certs\\cacert.pem`.
+3. In the active Apache PHP `php.ini`, set:
+
+   ```ini
+   curl.cainfo = "C:/wamp64/bin/php/certs/cacert.pem"
+   openssl.cafile = "C:/wamp64/bin/php/certs/cacert.pem"
+   ```
+
+4. Restart Apache through WAMP.
+
+Keep certificate verification enabled in the application.
+
 Bing search is optional. The default search engine is DuckDuckGo. To use Bing, set `SEARCH_ENGINE=bing` and provide `BING_SEARCH_KEY`.
 
 ## Import Profiles
