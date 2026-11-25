@@ -66,7 +66,7 @@ If GitHub refresh fails with `unable to get local issuer certificate`, configure
 
 1. Download the current CA bundle from [curl.se/ca/cacert.pem](https://curl.se/ca/cacert.pem).
 2. Save it outside the public project directory, for example:
-   `C:\\wamp64\\bin\\php\\certs\\cacert.pem`.
+   `C:\wamp64\bin\php\certs\cacert.pem`.
 3. In the active Apache PHP `php.ini`, set:
 
    ```ini
