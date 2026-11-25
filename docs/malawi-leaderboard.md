@@ -4,7 +4,7 @@
 
 The leaderboard ranks discoverable GitHub personal accounts by the number of contributions GitHub reports for the rolling 365-day period shown on the page. It is a separate public-data ranking and does not replace the manually assigned profile ranks stored in DEVSMW.
 
-The collector reads GitHub's public contribution calendar. It does not request the `read:user` scope, which can expose private contribution counts. It does not collect private repository names, private commit details, email addresses, or other non-public activity.
+The collector reads GitHub's public contribution calendar. It does not request the optional `read:user` scope, which can expose private and internal contribution counts. It does not collect private repository names, private commit details, email addresses, or other non-public activity. See the [GitHub GraphQL ContributionsCollection documentation](https://docs.github.com/en/graphql/reference/users#contributionscollection) for the contribution visibility rules.
 
 ## Discovery method and limitations
 
