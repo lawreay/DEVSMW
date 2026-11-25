@@ -14,4 +14,4 @@ Disallow: /scripts/
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://localhost/DEVSMW/sitemap.xml
+Sitemap: https://developersmw.lovestoblog.com/sitemap.xml
