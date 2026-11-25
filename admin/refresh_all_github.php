@@ -70,8 +70,14 @@ if ($submittedCursor === (int) $state['cursor_id']) {
                 (int) $profile['id'] . ': ' . $e->getMessage()
             );
 
-            // Stop the job if GitHub rejects authentication or rate limits the token.
-            if (str_contains($e->getMessage(), 'HTTP 401') || str_contains($e->getMessage(), 'HTTP 403')) {
+            // Stop on authentication failures and GitHub rate-limit responses.
+            // Support both cURL ("HTTP 403") and PHP stream ("HTTP/1.1 403") formats.
+            $httpStatus = null;
+            if (preg_match('/\\bHTTP(?:\\/\\d+(?:\\.\\d+)?)?\\s+(\\d{3})\\b/i', $e->getMessage(), $matches) === 1) {
+                $httpStatus = (int) $matches[1];
+            }
+
+            if (in_array($httpStatus, [401, 403, 429], true)) {
                 $state['blocked'] = true;
                 break;
             }
