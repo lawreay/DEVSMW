@@ -13,28 +13,37 @@ DEVSMW Profiles is a PHP/MySQL web app for searching and managing Malawi develop
 * Markdown profile importer.
 * Documentation for project goals, phases, data rules, UI, privacy, and terms.
 
-## Local Setup
+## Local Setup (WAMP)
 
 1. Start WAMP and make sure MySQL or MariaDB is running.
-2. Import the database schema:
+2. Copy the example environment file:
 
 ```powershell
-& 'C:\wamp64\bin\mariadb\mariadb11.4.9\bin\mysql.exe' -uroot < database\schema.sql
+Copy-Item .env.example .env
 ```
 
-3. Import existing markdown profiles:
+3. Edit `.env` and set your local database credentials. The database name must match the database created by `database/schema.sql` (`devsmw_profiles` by default).
+4. Import the database schema:
 
 ```powershell
-php scripts\import_markdown_profiles.php
+& 'C:\\wamp64\\bin\\mariadb\\mariadb11.4.9\\bin\\mysql.exe' -uroot < database\\schema.sql
 ```
 
-4. Open:
+5. Import existing markdown profiles:
+
+```powershell
+php scripts\\import_markdown_profiles.php
+```
+
+6. Open:
 
 ```text
 http://localhost/DEVSMW/
 ```
 
-5. Admin login:
+The `.env` file is machine-specific and must never be committed. Production hosting must have its own environment variables or a private `.env` file configured outside version control. Do not copy production credentials into this repository.
+
+## Admin Login
 
 ```text
 http://localhost/DEVSMW/admin/login.php
