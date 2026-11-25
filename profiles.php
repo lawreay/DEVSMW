@@ -74,6 +74,7 @@ $topWorkTypes = array_slice($workTypes, 0, 6, true);
     <nav>
         <a href="<?= e(site_url('index.php')) ?>">Home</a>
         <a class="active" href="<?= e(site_url('profiles.php')) ?>">Profiles</a>
+        <a href="<?= e(site_url('leaderboard.php')) ?>">Leaderboard</a>
         <a href="<?= e(site_url('docs/project-goal.md')) ?>">Docs</a>
     </nav>
 </header>
