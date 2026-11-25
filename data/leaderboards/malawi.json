@@ -1,0 +1,12 @@
+{
+  "generated_at": null,
+  "period_start": null,
+  "period_end": null,
+  "candidate_limit": 1000,
+  "candidate_count": 0,
+  "github_search_total": 0,
+  "ranked_count": 0,
+  "methodology": "Discover up to 1,000 GitHub user accounts returned by location:Malawi, sorted by followers; rank the discovered users by public contributions in the rolling 365-day period. The list is a discovery sample, not a complete census of Malawi developers.",
+  "contribution_visibility": "Public contributions only.",
+  "ranked_users": []
+}
