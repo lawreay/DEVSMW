@@ -24,7 +24,8 @@ if (!config('github.token')) {
 
 $state = $_SESSION[$stateKey] ?? null;
 
-if (!is_array($state)) {
+// A new dashboard submission starts a fresh run; continuation posts include cursor_id.
+if (!isset($_POST['cursor_id']) || !is_array($state)) {
     $total = (int) db()->query(
         'SELECT COUNT(*) FROM profiles WHERE visibility != "hidden"'
     )->fetchColumn();
