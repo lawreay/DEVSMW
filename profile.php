@@ -18,7 +18,7 @@ record_profile_visit((int) $profile['id']);
 $visitCount = get_profile_visit_count((int) $profile['id']);
 $lastVisit = get_profile_last_visit((int) $profile['id']);
 
-$projects = db()->prepare('SELECT * FROM projects WHERE profile_id = ? ORDER BY stars DESC, name LIMIT 20');
+$projects = db()->prepare('SELECT * FROM projects WHERE profile_id = ? AND is_private = 0 ORDER BY stars DESC, name LIMIT 20');
 $projects->execute([$profile['id']]);
 $projects = $projects->fetchAll();
 
