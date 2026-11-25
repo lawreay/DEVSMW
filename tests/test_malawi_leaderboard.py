@@ -56,6 +56,34 @@ class LeaderboardCollectorTests(unittest.TestCase):
                 "2026-01-01T23:59:59Z",
             )
 
+    def test_incomplete_search_is_rejected(self):
+        with patch.object(
+            collector,
+            "request_json",
+            return_value={"total_count": 1, "incomplete_results": True, "items": []},
+        ):
+            with self.assertRaises(collector.GitHubApiError):
+                collector.discover_candidates("token")
+
+    def test_graphql_rate_limit_is_retried(self):
+        candidate = [{"login": "developer-a", "avatar_url": "", "profile_url": "https://github.com/developer-a"}]
+        rate_limited = {"errors": [{"message": "API rate limit exceeded"}]}
+        successful = {
+            "data": {
+                "u0": {
+                    "login": "developer-a", "name": "Developer A", "location": "Malawi",
+                    "avatarUrl": "", "url": "https://github.com/developer-a",
+                    "contributionsCollection": {"contributionCalendar": {"totalContributions": 8}},
+                }
+            }
+        }
+        with patch.object(collector, "request_json", side_effect=[rate_limited, successful]) as request:
+            with patch.object(collector.time, "sleep"):
+                ranked = collector.fetch_contributions("token", candidate, "2025-01-01T00:00:00Z", "2026-01-01T23:59:59Z")
+
+        self.assertEqual(request.call_count, 2)
+        self.assertEqual(ranked[0]["contributions"], 8)
+
     def test_empty_search_does_not_create_a_fake_ranking(self):
         with patch.object(collector, "request_json", return_value={"total_count": 0, "items": []}):
             users, total = collector.discover_candidates("token")
