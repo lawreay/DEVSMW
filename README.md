@@ -36,19 +36,7 @@ php scripts\import_markdown_profiles.php
 http://localhost/DEVSMW/
 ```
 
-5. Admin login:
-
-```text
-http://localhost/DEVSMW/admin/login.php
-Username: admin
-Password: change-me-now
-```
-
-Change the default password from the admin panel before any public use:
-
-```text
-Admin Dashboard > Password
-```
+5. Open the admin login at `http://localhost/DEVSMW/admin/login.php` and use the administrator credentials configured for your installation. Change any initial password immediately. Never deploy with a shared or documented default password.
 
 ## Important Legal Note
 
