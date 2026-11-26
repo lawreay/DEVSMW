@@ -39,6 +39,7 @@ jobs:
       - name: Build leaderboard snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LEADERBOARD_OPT_OUTS: ${{ secrets.LEADERBOARD_OPT_OUTS }}
         run: python scripts/update_malawi_leaderboard.py
 
       - name: Validate snapshot JSON
