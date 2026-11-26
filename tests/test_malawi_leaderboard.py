@@ -1,5 +1,6 @@
 import sys
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -8,6 +9,14 @@ import update_malawi_leaderboard as collector
 
 
 class LeaderboardCollectorTests(unittest.TestCase):
+    def test_contribution_period_is_exactly_365_days(self):
+        end_at = datetime(2026, 11, 26, 11, 12, 13, tzinfo=timezone.utc)
+        start_at, actual_end = collector.contribution_period(end_at)
+
+        self.assertEqual(actual_end, end_at)
+        self.assertEqual(actual_end - start_at, timedelta(days=365))
+        self.assertEqual(start_at.isoformat(), "2025-11-26T11:12:13+00:00")
+
     def test_discovery_keeps_personal_accounts_only(self):
         response = {
             "total_count": 2,
