@@ -1,5 +1,7 @@
 # DEVSMW Profiles
 
+[![PHP Lint](https://github.com/lawreay/DEVSMW/actions/workflows/php-lint.yml/badge.svg?branch=main)](https://github.com/lawreay/DEVSMW/actions/workflows/php-lint.yml) [![Stars](https://img.shields.io/github/stars/lawreay/DEVSMW?style=flat)](https://github.com/lawreay/DEVSMW/stargazers) [![Forks](https://img.shields.io/github/forks/lawreay/DEVSMW?style=flat)](https://github.com/lawreay/DEVSMW/network/members) [![Last Commit](https://img.shields.io/github/last-commit/lawreay/DEVSMW?style=flat)](https://github.com/lawreay/DEVSMW/commits/main)
+
 DEVSMW Profiles is a PHP/MySQL web app for searching and managing Malawi developer profiles.
 
 ## What Is Included
@@ -34,19 +36,7 @@ php scripts\import_markdown_profiles.php
 http://localhost/DEVSMW/
 ```
 
-5. Admin login:
-
-```text
-http://localhost/DEVSMW/admin/login.php
-Username: admin
-Password: change-me-now
-```
-
-Change the default password from the admin panel before any public use:
-
-```text
-Admin Dashboard > Password
-```
+5. Open the admin login at `http://localhost/DEVSMW/admin/login.php` and use the administrator credentials configured for your installation. Change any initial password immediately. Never deploy with a shared or documented default password.
 
 ## Important Legal Note
 
