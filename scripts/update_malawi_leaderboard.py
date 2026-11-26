@@ -191,10 +191,12 @@ def main() -> int:
         print("GITHUB_TOKEN is required. In GitHub Actions, use the built-in GITHUB_TOKEN.", file=sys.stderr)
         return 1
 
-    today = datetime.now(timezone.utc).date()
-    period_start = today - timedelta(days=365)
-    start = f"{period_start.isoformat()}T00:00:00Z"
-    end = f"{today.isoformat()}T23:59:59Z"
+    period_end_at = datetime.now(timezone.utc).replace(microsecond=0)
+    period_start_at = period_end_at - timedelta(days=365)
+    period_start = period_start_at.date()
+    period_end = period_end_at.date()
+    start = period_start_at.isoformat().replace("+00:00", "Z")
+    end = period_end_at.isoformat().replace("+00:00", "Z")
 
     print("Discovering Malawi-located GitHub accounts, sorted by followers...", flush=True)
     candidates, search_total = discover_candidates(token)
@@ -206,7 +208,7 @@ def main() -> int:
 
     print(
         f"Collecting public contribution totals for {len(candidates)} candidates "
-        f"over {period_start.isoformat()} to {today.isoformat()}...",
+        f"over {period_start_at.isoformat()} to {period_end_at.isoformat()}...",
         flush=True,
     )
     ranked_users = fetch_contributions(token, candidates, start, end)
@@ -216,7 +218,9 @@ def main() -> int:
     snapshot = {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "period_start": period_start.isoformat(),
-        "period_end": today.isoformat(),
+        "period_start_at": start,
+        "period_end": period_end.isoformat(),
+        "period_end_at": end,
         "candidate_limit": CANDIDATE_LIMIT,
         "candidate_count": len(candidates),
         "github_search_total": search_total,
