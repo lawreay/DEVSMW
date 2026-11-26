@@ -24,4 +24,6 @@ If GitHub's API is unavailable, rate-limits the workflow, or returns incomplete 
 
 ## Corrections and opt-out
 
-A leaderboard entry is derived from a public GitHub account and its public location field. If an account is listed incorrectly, the profile owner can update their GitHub location or contact DEVSMW through the project's published contact channel to request a review. Opt-out requests must be handled consistently with the DEVSMW privacy and data-correction policy.
+A leaderboard entry is derived from a public GitHub account and its public location field. If an account is listed incorrectly, the profile owner can update their GitHub location or contact the DEVSMW maintainers through the project's published contact channel to request a review.
+
+Maintainers can suppress accounts from future snapshots by adding their GitHub usernames, separated by commas, to the repository Actions secret named `LEADERBOARD_OPT_OUTS`. Usernames in this secret are not committed to the public repository. The collector applies exclusions case-insensitively before fetching contribution totals. After changing the secret, run the leaderboard workflow to remove any excluded accounts from the published snapshot. An empty or unset secret means no additional exclusions.
