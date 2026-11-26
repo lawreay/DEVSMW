@@ -67,8 +67,11 @@ def request_json(url: str, token: str, payload: dict | None = None) -> dict:
     raise GitHubApiError("GitHub API request failed after retries.")
 
 
-def discover_candidates(token: str) -> tuple[list[dict], int]:
+def discover_candidates(
+    token: str, excluded_logins: set[str] | None = None
+) -> tuple[list[dict], int]:
     candidates: list[dict] = []
+    excluded = {login.casefold() for login in (excluded_logins or set())}
     total_count = 0
 
     for page in range(1, 11):
@@ -94,7 +97,11 @@ def discover_candidates(token: str) -> tuple[list[dict], int]:
                 "profile_url": item.get("html_url", ""),
             }
             for item in items
-            if item.get("type") == "User" and item.get("login")
+            if (
+                item.get("type") == "User"
+                and item.get("login")
+                and item["login"].casefold() not in excluded
+            )
         )
         print(
             f"Discovered page {page}/10: {len(candidates)} user accounts "
@@ -203,8 +210,15 @@ def main() -> int:
     start = period_start_at.isoformat().replace("+00:00", "Z")
     end = period_end_at.isoformat().replace("+00:00", "Z")
 
+    excluded_logins = {
+        login.strip().lstrip("@").casefold()
+        for login in os.environ.get("LEADERBOARD_OPT_OUTS", "").split(",")
+        if login.strip()
+    }
     print("Discovering Malawi-located GitHub accounts, sorted by followers...", flush=True)
-    candidates, search_total = discover_candidates(token)
+    if excluded_logins:
+        print(f"Applying {len(excluded_logins)} private opt-out exclusions.", flush=True)
+    candidates, search_total = discover_candidates(token, excluded_logins)
     if not candidates:
         raise GitHubApiError(
             "GitHub returned no user accounts for location:Malawi. "
