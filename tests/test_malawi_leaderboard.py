@@ -32,6 +32,20 @@ class LeaderboardCollectorTests(unittest.TestCase):
         self.assertEqual([user["login"] for user in users], ["dev-one"])
         self.assertEqual(request.call_count, 1)
 
+    def test_discovery_excludes_opted_out_accounts_case_insensitively(self):
+        response = {
+            "total_count": 2,
+            "items": [
+                {"login": "keep-me", "type": "User", "avatar_url": "", "html_url": "https://github.com/keep-me"},
+                {"login": "DoNotList", "type": "User", "avatar_url": "", "html_url": "https://github.com/DoNotList"},
+            ],
+        }
+        with patch.object(collector, "request_json", return_value=response):
+            users, total = collector.discover_candidates("token", {"donotlist"})
+
+        self.assertEqual(total, 2)
+        self.assertEqual([user["login"] for user in users], ["keep-me"])
+
     def test_contribution_results_are_sorted_highest_first(self):
         candidates = [
             {"login": "developer-a", "avatar_url": "", "profile_url": "https://github.com/developer-a"},
