@@ -185,14 +185,19 @@ def fetch_contributions(
     return ranked[:LEADERBOARD_LIMIT]
 
 
+def contribution_period(end_at: datetime | None = None) -> tuple[datetime, datetime]:
+    """Return an exact rolling 365-day UTC interval ending at end_at."""
+    period_end = (end_at or datetime.now(timezone.utc)).astimezone(timezone.utc).replace(microsecond=0)
+    return period_end - timedelta(days=365), period_end
+
+
 def main() -> int:
     token = os.environ.get("GITHUB_TOKEN", "").strip()
     if not token:
         print("GITHUB_TOKEN is required. In GitHub Actions, use the built-in GITHUB_TOKEN.", file=sys.stderr)
         return 1
 
-    period_end_at = datetime.now(timezone.utc).replace(microsecond=0)
-    period_start_at = period_end_at - timedelta(days=365)
+    period_start_at, period_end_at = contribution_period()
     period_start = period_start_at.date()
     period_end = period_end_at.date()
     start = period_start_at.isoformat().replace("+00:00", "Z")
