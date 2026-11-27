@@ -26,6 +26,14 @@ echo '    <changefreq>daily</changefreq>' . "\n";
 echo '    <priority>0.9</priority>' . "\n";
 echo '  </url>' . "\n";
 
+// Malawi GitHub contributions leaderboard
+echo '  <url>' . "\n";
+echo '    <loc>' . e(site_url('leaderboard.php')) . '</loc>' . "\n";
+echo '    <lastmod>' . date('Y-m-d') . '</lastmod>' . "\n";
+echo '    <changefreq>weekly</changefreq>' . "\n";
+echo '    <priority>0.8</priority>' . "\n";
+echo '  </url>' . "\n";
+
 // Individual profiles
 $stmt = db()->query('SELECT github_username, updated_at FROM profiles WHERE visibility = "published" ORDER BY updated_at DESC');
 $profiles = $stmt->fetchAll();
