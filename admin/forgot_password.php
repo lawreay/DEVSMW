@@ -7,6 +7,7 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verify_csrf();
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
 
@@ -168,6 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </p>
         <?php else: ?>
             <form method="post">
+                <?= csrf_field() ?>
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" required autocomplete="username">
