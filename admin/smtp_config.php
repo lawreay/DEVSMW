@@ -25,7 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         if ($updated) {
-            audit_log('update_email_config', 'email_config', null, null, $_POST);
+            $auditData = $_POST;
+            unset($auditData['smtp_password'], $auditData['csrf_token']);
+            audit_log('update_email_config', 'email_config', null, null, $auditData);
             flash('SMTP configuration saved successfully.');
             $config = get_smtp_config();
         } else {
