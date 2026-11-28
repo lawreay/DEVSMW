@@ -20,7 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $allowedVisibility = ['published', 'draft', 'hidden'];
     $consentStatus = in_array($_POST['consent_status'] ?? '', $allowedConsent, true) ? $_POST['consent_status'] : 'needs_review';
     $visibility = in_array($_POST['visibility'] ?? '', $allowedVisibility, true) ? $_POST['visibility'] : 'draft';
-    $newRank = $_POST['rank_private'] !== '' ? ((int) $_POST['rank_private'] ?: null) : null;
+    $rankInput = trim((string) ($_POST['rank_private'] ?? ''));
+    $newRank = null;
+
+    if ($rankInput !== '') {
+        if (!ctype_digit($rankInput) || (int) $rankInput < 1 || (int) $rankInput > 9999) {
+            flash('Rank must be a whole number between 1 and 9999, or left empty to remove the rank.', 'error');
+            redirect('profile_edit.php?id=' . $id);
+        }
+
+        $newRank = (int) $rankInput;
+    }
 
     $update = db()->prepare(
         'UPDATE profiles SET
@@ -49,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($newRank !== $profile['rank_private']) {
         try {
             update_profile_rank($id, $newRank);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             flash('Rank update failed: ' . $e->getMessage(), 'error');
             redirect('profile_edit.php?id=' . $id);
         }
