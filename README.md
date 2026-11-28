@@ -19,28 +19,36 @@ Private projects are excluded from public profile pages. Only projects marked as
 * Markdown profile importer.
 * Documentation for project goals, phases, data rules, UI, privacy, and terms.
 
-## Local Setup
+## Local Setup (WAMP)
 
 1. Start WAMP and make sure MySQL or MariaDB is running.
-2. Import the database schema:
+2. Create your private environment file:
 
 ```powershell
-& 'C:\wamp64\bin\mariadb\mariadb11.4.9\bin\mysql.exe' -uroot < database\schema.sql
+Copy-Item .env.example .env
+notepad .env
 ```
 
-3. Import existing markdown profiles:
+3. Set the database values in `.env` to match your local WAMP installation.
+4. Import the database schema from the project root:
+
+```powershell
+cmd /c '"C:\wamp64\bin\mariadb\mariadb11.4.9\bin\mysql.exe" -uroot < "database\schema.sql"'
+```
+
+5. Import existing Markdown profiles:
 
 ```powershell
 php scripts\import_markdown_profiles.php
 ```
 
-4. Open:
+6. Open the application at `http://localhost/DEVSMW/`.
 
-```text
-http://localhost/DEVSMW/
-```
+The private `.env` file is machine-specific and must never be committed. Use environment variables or a private server-side configuration file for production. Never put production credentials in this repository.
 
-5. Open the admin login at `http://localhost/DEVSMW/admin/login.php` and use the administrator credentials configured for your installation. Change any initial password immediately. Never deploy with a shared or documented default password.
+## Admin Login
+
+Open `http://localhost/DEVSMW/admin/login.php` and use the administrator credentials configured for your installation. Change any initial password immediately. Never deploy with a shared or documented default password.
 
 ## Important Legal Note
 
