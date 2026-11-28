@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+  schedule:
+    # 06:00 Africa/Blantyre (UTC+2)
+    - cron: '0 4 * * *'
 
 permissions:
   contents: read
