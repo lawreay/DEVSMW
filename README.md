@@ -4,6 +4,10 @@
 
 DEVSMW Profiles is a PHP/MySQL web app for searching and managing Malawi developer profiles.
 
+## Public Profile Privacy
+
+Private projects are excluded from public profile pages. Only projects marked as public are eligible to appear in the public project list.
+
 ## What Is Included
 
 * Public searchable profile directory.
