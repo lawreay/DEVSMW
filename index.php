@@ -79,7 +79,6 @@ foreach ($techData as $tech) {
 </head>
 <body class="home-view">
 <?= schema_organization() . "\n"?>
-</body>
 <header class="topbar">
     <a class="brand" href="<?= e(site_url('index.php')) ?>">
         <span class="brand-mark">D</span>
