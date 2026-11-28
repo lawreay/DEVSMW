@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/../includes/bootstrap.php';
 require __DIR__ . '/../includes/email.php';
-set_page_cache_control('public');
+set_page_cache_control('admin');
 
 $error = '';
 $success = '';
