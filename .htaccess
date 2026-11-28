@@ -12,8 +12,9 @@
     # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
     # RewriteRule ^(.*)$ http://%1$1 [R=301,L]
 
-    # Keep environment and configuration files out of the public web root.
-    RewriteRule ^(?:\.env|config/|database/|includes/)(?:/|$) - [F,L,NC]
+    # Keep private project data and implementation directories out of public access.
+    RewriteRule ^(?:\.git|__pycache__|config|database|includes|scripts|malawi_profiles)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:\.env|malawi_rank\.json)$ - [F,L,NC]
 </IfModule>
 
 # Enable compression for better performance
@@ -53,4 +54,14 @@
     Header set X-Content-Type-Options "nosniff"
     # Enable HSTS (only for HTTPS)
     # Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# Prevent direct access to Python utility and bytecode files.
+<FilesMatch "\.(?:py|pyc|pyo)$">
+    Require all denied
+</FilesMatch>
+
+# Disable directory listings when the hosting provider allows this directive.
+<IfModule mod_autoindex.c>
+    Options -Indexes
 </IfModule>
